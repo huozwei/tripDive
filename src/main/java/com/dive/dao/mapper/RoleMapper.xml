@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.dive.dao.RoleDao">
+	<select id="queryRolesByUser" resultType="java.lang.String">
+		select r.ROLE_NAME from 
+					t_sys_role r,
+					t_sys_user u,
+					t_sys_user_role s 
+		where 
+		u.USER_ID = s.USER_ID and s.ROLE_ID = r.ROLE_ID and u.USER_NAME = #{userName}
+	</select>
+	
+	<select id="queryRolesByUsers" resultType="com.dive.entity.Role">
+		select r.ROLE_ID,r.ROLE_NAME,r.REMARK from 
+					t_sys_role r,
+					t_sys_user u,
+					t_sys_user_role s 
+		where 
+		u.USER_ID = s.USER_ID and s.ROLE_ID = r.ROLE_ID and u.USER_NAME = #{userName}
+	</select>
+	
+</mapper>

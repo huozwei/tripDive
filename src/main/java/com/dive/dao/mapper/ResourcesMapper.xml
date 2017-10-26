@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.dive.dao.ResourcesDao">
+	<select id="queryResourcesByUser" resultType="java.lang.String">
+		select m.RES_NAME from 
+					t_sys_user u,
+					t_sys_user_role s,
+					t_sys_role r,
+					t_sys_role_resources n,
+					t_sys_resources m 
+		where 
+		u.USER_ID = s.USER_ID and s.ROLE_ID = r.ROLE_ID and r.ROLE_ID = n.ROLE_ID 
+		and n.RES_ID = m.RES_ID and u.USER_NAME = #{0}
+	</select>
+	
+	
+	<resultMap id="resourceList" type="com.dive.entity.Resources">  
+        <result property="resName" column="RES_NAME"/>  
+        <result property="parentId" column="PARENT_ID"/>  
+        <result property="resUrl" column="RES_URL"/>  
+    </resultMap> 
+	<select id="queryResourcesByUserName" resultMap="resourceList">
+		select m.RES_NAME,m.PARENT_ID,m.RES_URL from 
+					t_sys_user u,
+					t_sys_user_role s,
+					t_sys_role r,
+					t_sys_role_resources n,
+					t_sys_resources m 
+		where 
+		u.USER_ID = s.USER_ID and s.ROLE_ID = r.ROLE_ID and r.ROLE_ID = n.ROLE_ID 
+		and n.RES_ID = m.RES_ID and u.USER_NAME = #{userName}
+	</select>
+	
+</mapper>
