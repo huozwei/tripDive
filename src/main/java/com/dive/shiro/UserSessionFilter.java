@@ -2,15 +2,12 @@ package com.dive.shiro;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
-import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dive.entity.Users;
@@ -34,6 +31,7 @@ public class UserSessionFilter extends AccessControlFilter {
 	        Subject currentUser = SecurityUtils.getSubject();
 	        //判断用户是通过记住我功能自动登录,此时session失效
 	        if(!currentUser.isAuthenticated() && currentUser.isRemembered()){
+	        	logger.info("进入了用户是通过记住我功能自动登录,但是session失效");
 	            try {
 	            	Users users = new Users();
 	            	users.setUserName(currentUser.getPrincipals().toString());
@@ -42,10 +40,7 @@ public class UserSessionFilter extends AccessControlFilter {
 	                UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), user.getPassword(),currentUser.isRemembered());
 	                //把当前用户放入session
 	                currentUser.login(token);
-	                Session session = currentUser.getSession();
-	                session.setAttribute("currentUser",user);
-	                //设置会话的过期时间--ms,默认是30分钟，设置负数表示永不过期
-	                session.setTimeout(-1000l);
+	                logger.info("结束了。。。。。");
 	            }catch (Exception e){
 	                //自动登录失败,跳转到登录页面
 	                return false;

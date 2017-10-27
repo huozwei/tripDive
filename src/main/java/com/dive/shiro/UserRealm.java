@@ -74,41 +74,42 @@ public class UserRealm extends AuthorizingRealm {
 		logger.info("进入到用户登录认证");
 		String userName = token.getPrincipal().toString();// 用户名
 		String password = new String((char[]) token.getCredentials());// 密码
-		logger.info("用户名为："+userName+"   密码为："+password);
+		logger.info("用户名为：" + userName + "   密码为：" + password);
 		Users currentUser = usersService.QueryUsers(userName, password);
-		logger.info("查到的用户大小为："+currentUser.getUserName());
-		
-		if(currentUser==null){
-			throw new UnknownAccountException(); //如果用户名错误
+		logger.info("查到的用户大小为：" + currentUser.getUserName());
+
+		if (currentUser == null) {
+			throw new UnknownAccountException(); // 如果用户名错误
 		}
-		if(!currentUser.getPassword().equals(password)){
-			throw new IncorrectCredentialsException(); //如果密码错误
+		if (!currentUser.getPassword().equals(password)) {
+			throw new IncorrectCredentialsException(); // 如果密码错误
 		}
-		
-		if(currentUser!=null){
+
+		if (currentUser != null) {
 			logger.info("当前用户不为空");
 			SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName, password, getName());
 			this.setSession("currentUser", currentUser);
 			return authenticationInfo;
-		}else{
+		} else {
 			logger.info("未找到对应用户");
 			return null;
 		}
 	}
-	
-	/** 
-     * 将一些数据放到ShiroSession中,以便于其它地方使用 
-     * @see 比如Controller,使用时直接用HttpSession.getAttribute(key)就可以取到 
-     */  
-    private void setSession(String key, Users value){  
-        Subject currentUser = SecurityUtils.getSubject();  
-        if(null != currentUser){  
-            Session session = currentUser.getSession();  
-           logger.info("Session默认超时时间为[" + session.getTimeout() + "]毫秒");  
-            if(null != session){  
-                session.setAttribute(key, value);  
-            }  
-        }  
-    }  
+
+	/**
+	 * 将一些数据放到ShiroSession中,以便于其它地方使用
+	 * 
+	 * @see 比如Controller,使用时直接用HttpSession.getAttribute(key)就可以取到
+	 */
+	private void setSession(Object key, Object value) {
+		Subject currentUser = SecurityUtils.getSubject();
+		if (null != currentUser) {
+			Session session = currentUser.getSession();
+			logger.info("Session默认超时时间为[" + session.getTimeout() + "]毫秒");
+			if (null != session) {
+				session.setAttribute(key, value);
+			}
+		}
+	}
 
 }

@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -66,16 +64,11 @@ public class UsersController extends BaseController{
 		logger.info("进入到获取用户列表");
 		List<Users> userList = usersService.GetUserList();
 		model.addAttribute("userlist", userList);
-		Subject currentUser = SecurityUtils.getSubject();
-		logger.info("user是否有值："+currentUser);
-		Session session = currentUser.getSession();
-		Users user = (Users) session.getAttribute("currentUser");
-		logger.info("user是否有值："+user);
-		
-		logger.info("拿到的用户名为："+user.getUserName());
+		String userName = (String) SecurityUtils.getSubject().getPrincipal();
+		logger.info("user是否有值："+userName);
 		
 		//加载菜单,根据用户名去加载对应用户的资源
-		List<Resources> resList = resourcesService.queryResourcesByUserName(user.getUserName());
+		List<Resources> resList = resourcesService.queryResourcesByUserName(userName);
 		
 		List<Resources> resourceList = new ArrayList<>();
 		
@@ -87,7 +80,6 @@ public class UsersController extends BaseController{
 				
 			}
 		}
-		
 		
 		return "users/userlist";
 	}
